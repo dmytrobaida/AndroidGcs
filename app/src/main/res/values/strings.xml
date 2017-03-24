@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">AndroidGcs</string>
+    <string name="connect_to_drone">Connect to drone</string>
+    <string name="add_new_way">Add new way</string>
+    <string name="delete_waypoint_dialog_question">Are you sure you want to delete this point?</string>
+    <string name="delete_waypoint_dialog_title">Delete point</string>
+    <string name="x_coordinate">X Coordinate:</string>
+    <string name="y_coordinate">Y Coordinate:</string>
+    <string name="height">Height:</string>
+    <string name="edit_route_dialog_error_message">Enter all coordinates!</string>
+    <string name="download_waypoints">Download waypoints</string>
+    <string name="upload_waypoints">Upload waypoints</string>
+    <string name="save_waypoints">Save waypoints</string>
+    <string name="delete_map_way_dialog_title">Delete way</string>
+    <string name="delete_map_way_dialog_question">Are you sure you want to delete this way?</string>
+
+
+    <string-array name="waypoint_types">
+        <item>Way Point</item>
+        <item>Takeoff</item>
+        <item>Land</item>
+    </string-array>
+
+</resources>

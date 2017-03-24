@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AndroidGcs</string>
+    <string name="add_new_way">Добавить новый путь</string>
+    <string name="connect_to_drone">Присоединиться к дрону</string>
+    <string name="delete_waypoint_dialog_question">Действительно ли вы хотите удалить эту точку?</string>
+    <string name="delete_waypoint_dialog_title">Удаление точки</string>
+    <string name="x_coordinate">Координата X:</string>
+    <string name="y_coordinate">Координата Y:</string>
+    <string name="height">Высота:</string>
+    <string name="edit_route_dialog_error_message">Введите все координаты!</string>
+    <string name="download_waypoints">Скачать точки</string>
+    <string name="upload_waypoints">Загрузить точки</string>
+    <string name="save_waypoints">Сохранить точки</string>
+    <string name="delete_map_way_dialog_title">Удаление пути</string>
+    <string name="delete_map_way_dialog_question">Действительно ли вы хотите удалить этот путь?</string>
+</resources>
