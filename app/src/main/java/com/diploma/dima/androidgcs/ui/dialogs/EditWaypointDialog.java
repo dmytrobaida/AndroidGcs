@@ -9,12 +9,13 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.diploma.dima.androidgcs.R;
-import com.diploma.dima.androidgcs.ui.interfaces.IAction;
+import com.diploma.dima.androidgcs.models.Waypoint;
+import com.diploma.dima.androidgcs.ui.interfaces.IPointAction;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class EditRouteDialog extends DialogFragment {
+public class EditWaypointDialog extends DialogFragment {
     @BindView(R.id.edit_waypoint_dialog_button)
     Button submitEdit;
     @BindView(R.id.new_x_coordinate)
@@ -23,17 +24,20 @@ public class EditRouteDialog extends DialogFragment {
     EditText yCoordinate;
     @BindView(R.id.new_height)
     EditText height;
-    IAction onDoneAction;
+    IPointAction onDoneAction;
 
-    public static EditRouteDialog newInstance(IAction onDone) {
-        EditRouteDialog editRouteDialog = new EditRouteDialog();
-        editRouteDialog.onDoneAction = onDone;
+    double xc;
+    double yc;
+    double h;
 
-//        Bundle args = new Bundle();
-//        args.putInt("num", num);
-//        editRouteDialog.setArguments(args);
+    public static EditWaypointDialog newInstance(Waypoint waypoint, IPointAction onDone) {
+        EditWaypointDialog editWaypointDialog = new EditWaypointDialog();
+        editWaypointDialog.onDoneAction = onDone;
+        editWaypointDialog.xc = waypoint.getX();
+        editWaypointDialog.yc =  waypoint.getY();
+        editWaypointDialog.h = waypoint.getHeight();
 
-        return editRouteDialog;
+        return editWaypointDialog;
     }
 
     @Override
@@ -46,16 +50,20 @@ public class EditRouteDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.edit_waypoint_dialog, null);
         ButterKnife.bind(this, view);
+        xCoordinate.setText(Double.toString(xc));
+        yCoordinate.setText(Double.toString(yc));
+        height.setText(Double.toString(h));
+
         submitEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
-                    float xc =  Float.parseFloat(xCoordinate.getText().toString());
-                    float yc = Float.parseFloat(yCoordinate.getText().toString());
-                    float h =  Float.parseFloat(height.getText().toString());
-                    onDoneAction.done(xc,yc,h);
+                    xc = Float.parseFloat(xCoordinate.getText().toString());
+                    yc = Float.parseFloat(yCoordinate.getText().toString());
+                    h = Float.parseFloat(height.getText().toString());
+                    onDoneAction.done(xc, yc, h);
                     dismiss();
-                }catch (NumberFormatException ex){
+                } catch (NumberFormatException ex) {
                     submitEdit.setError(getString(R.string.edit_route_dialog_error_message));
                 }
             }

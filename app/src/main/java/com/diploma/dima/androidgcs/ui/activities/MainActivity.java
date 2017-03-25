@@ -17,6 +17,7 @@ import com.diploma.dima.androidgcs.models.MapWay;
 import com.diploma.dima.androidgcs.ui.adapters.MapWaysRecyclerAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,8 +28,6 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    ArrayList<MapWay> mapWays = new ArrayList<>();
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,10 +36,7 @@ public class MainActivity extends AppCompatActivity {
         waysRecycler.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         waysRecycler.setLayoutManager(mLayoutManager);
-
-        mapWays.add(new MapWay(this, "Way 1", BitmapFactory.decodeResource(getResources(), R.drawable.route_map)));
-        mapWays.add(new MapWay(this, "Way 2", BitmapFactory.decodeResource(getResources(), R.drawable.chart)));
-        mAdapter = new MapWaysRecyclerAdapter(mapWays);
+        mAdapter = new MapWaysRecyclerAdapter();
         waysRecycler.setAdapter(mAdapter);
     }
 
@@ -55,12 +51,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 10) {
             if (resultCode == RESULT_OK) {
-                int id = data.getIntExtra("id", -1);
-                if (id > -1) {
-                    MapWay mapWay = (MapWay) data.getSerializableExtra("MapWay");
-                    mapWays.set(id, mapWay);
-                    mAdapter.notifyItemChanged(id);
-                }
+                int id = data.getIntExtra("adapterPosition", -1);
+                mAdapter.notifyItemChanged(id);
             }
         }
     }
@@ -76,8 +68,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.add_new_way:
-                mapWays.add(new MapWay(this, "Way " + (mapWays.size() + 1), BitmapFactory.decodeResource(getResources(), R.drawable.chart)));
-                mAdapter.notifyItemInserted(mapWays.size() + 1);
+                MapWay mapWay = new MapWay();
+                mapWay.save();
+                mAdapter.notifyItemInserted(MapWay.listAll(MapWay.class).size() - 1);
                 return true;
 
             default:

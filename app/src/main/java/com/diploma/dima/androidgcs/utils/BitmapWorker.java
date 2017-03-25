@@ -17,12 +17,8 @@ public class BitmapWorker {
             fis = context.openFileInput(picName);
             b = BitmapFactory.decodeStream(fis);
             fis.close();
-
         }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        catch (IOException e) {
+        catch (Exception e){
             e.printStackTrace();
         }
         return b;

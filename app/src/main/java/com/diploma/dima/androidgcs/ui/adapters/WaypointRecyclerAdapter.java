@@ -1,7 +1,5 @@
 package com.diploma.dima.androidgcs.ui.adapters;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -16,17 +15,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.diploma.dima.androidgcs.R;
-import com.diploma.dima.androidgcs.ui.dialogs.EditRouteDialog;
-import com.diploma.dima.androidgcs.ui.interfaces.IAction;
+import com.diploma.dima.androidgcs.models.MapWay;
+import com.diploma.dima.androidgcs.models.WayPointType;
+import com.diploma.dima.androidgcs.models.Waypoint;
+import com.diploma.dima.androidgcs.ui.dialogs.EditWaypointDialog;
+import com.diploma.dima.androidgcs.ui.interfaces.IPointAction;
+import com.diploma.dima.androidgcs.ui.interfaces.IResultAction;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class WaypointRecyclerAdapter extends RecyclerView.Adapter<WaypointRecyclerAdapter.ViewHolder> {
-    private String[] mDataset;
+    long mapWayId;
+    IResultAction action;
 
-    public WaypointRecyclerAdapter(String[] dataset) {
-        mDataset = dataset;
+    public WaypointRecyclerAdapter(long mapWayId, IResultAction action) {
+        this.mapWayId = mapWayId;
+        this.action = action;
     }
 
     @Override
@@ -51,13 +58,13 @@ public class WaypointRecyclerAdapter extends RecyclerView.Adapter<WaypointRecycl
         ImageButton delete;
 
         final AppCompatActivity activity;
+        ArrayAdapter<WayPointType> adapter;
 
         ViewHolder(final View v) {
             super(v);
             ButterKnife.bind(this, v);
 
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(v.getContext(), R.array.waypoint_types,
-                    R.layout.support_simple_spinner_dropdown_item);
+            adapter = new ArrayAdapter<>(v.getContext(), R.layout.support_simple_spinner_dropdown_item, WayPointType.values());
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(adapter);
             activity = (AppCompatActivity) v.getContext();
@@ -66,11 +73,28 @@ public class WaypointRecyclerAdapter extends RecyclerView.Adapter<WaypointRecycl
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        String[] arr = mDataset[position].split(" ");
+        List<Waypoint> waypoints = MapWay.findById(MapWay.class, mapWayId).getWaypoints();
+        Waypoint waypoint = waypoints.get(holder.getAdapterPosition());
+        holder.spinner.setSelection(holder.adapter.getPosition(waypoint.getWayPointType()));
 
-        holder.x_waypoint.setText(arr[0]);
-        holder.y_waypoint.setText(arr[1]);
-        holder.height_waypoint.setText(arr[2]);
+        holder.x_waypoint.setText(Double.toString(waypoint.getX()));
+        holder.y_waypoint.setText(Double.toString(waypoint.getY()));
+        holder.height_waypoint.setText(Double.toString(waypoint.getHeight()));
+
+        holder.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                List<Waypoint> waypoints = MapWay.findById(MapWay.class, mapWayId).getWaypoints();
+                waypoints.get(holder.getAdapterPosition()).setWayPointType((WayPointType) adapterView.getSelectedItem());
+                waypoints.get(holder.getAdapterPosition()).save();
+                action.doAction();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +104,9 @@ public class WaypointRecyclerAdapter extends RecyclerView.Adapter<WaypointRecycl
                         .setMessage(R.string.delete_waypoint_dialog_question)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(view.getContext(), "Delete " + position, Toast.LENGTH_SHORT).show();
+                                MapWay.findById(MapWay.class, mapWayId).getWaypoints().get(holder.getAdapterPosition()).delete();
+                                notifyItemRemoved(holder.getAdapterPosition());
+                                action.doAction();
                             }
                         })
                         .setNegativeButton(android.R.string.no, null)
@@ -92,19 +118,26 @@ public class WaypointRecyclerAdapter extends RecyclerView.Adapter<WaypointRecycl
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditRouteDialog editRouteDialog = EditRouteDialog.newInstance(new IAction() {
+                final List<Waypoint> wps = MapWay.findById(MapWay.class, mapWayId).getWaypoints();
+                final Waypoint wp = wps.get(holder.getAdapterPosition());
+                EditWaypointDialog editWaypointDialog = EditWaypointDialog.newInstance(wp, new IPointAction() {
                     @Override
-                    public void done(float x, float y, float height) {
-                       // holder.x_waypoint.setText(String.format("%s %s %s", x, y, height));
+                    public void done(double x, double y, double height) {
+                        wp.setX(x);
+                        wp.setY(y);
+                        wp.setHeight(height);
+                        wp.save();
+                        notifyItemChanged(wps.indexOf(wp));
+                        action.doAction();
                     }
                 });
-                editRouteDialog.show(holder.activity.getFragmentManager(), "Edit");
+                editWaypointDialog.show(holder.activity.getFragmentManager(), "Edit");
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mDataset.length;
+        return MapWay.findById(MapWay.class, mapWayId).getWaypoints().size();
     }
 }

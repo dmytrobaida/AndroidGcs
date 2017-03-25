@@ -2,6 +2,8 @@ package com.diploma.dima.androidgcs.ui.adapters;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,14 +18,15 @@ import android.widget.Toast;
 import com.diploma.dima.androidgcs.R;
 import com.diploma.dima.androidgcs.models.MapWay;
 import com.diploma.dima.androidgcs.ui.activities.MapActivity;
+import com.google.android.gms.maps.GoogleMap;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MapWaysRecyclerAdapter extends RecyclerView.Adapter<MapWaysRecyclerAdapter.ViewHolder> {
-    private ArrayList<MapWay> mapWays;
     private View view;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -33,6 +36,10 @@ public class MapWaysRecyclerAdapter extends RecyclerView.Adapter<MapWaysRecycler
         ImageButton mapImageButton;
         @BindView(R.id.map_way_delete)
         ImageButton mapWayDelete;
+        @BindView(R.id.map_way_info)
+        ImageButton mapWayInfo;
+        @BindView(R.id.map_way_send)
+        ImageButton mapWaySend;
 
         ViewHolder(final View v) {
             super(v);
@@ -40,8 +47,7 @@ public class MapWaysRecyclerAdapter extends RecyclerView.Adapter<MapWaysRecycler
         }
     }
 
-    public MapWaysRecyclerAdapter(ArrayList<MapWay> mapWays) {
-        this.mapWays = mapWays;
+    public MapWaysRecyclerAdapter() {
     }
 
     @Override
@@ -51,17 +57,24 @@ public class MapWaysRecyclerAdapter extends RecyclerView.Adapter<MapWaysRecycler
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
-        holder.mapWayTitle.setText(mapWays.get(position).getTitle());
-        holder.mapImageButton.setImageBitmap(mapWays.get(position).getLogo(view.getContext()));
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        List<MapWay> mapWays = MapWay.listAll(MapWay.class);
 
+        holder.mapWayTitle.setText(mapWays.get(holder.getAdapterPosition()).getTitle());
+        Bitmap logo = mapWays.get(holder.getAdapterPosition()).getLogo(view.getContext());
+        if (logo != null) {
+            holder.mapImageButton.setImageBitmap(logo);
+        }else {
+            holder.mapImageButton.setImageBitmap(null);
+        }
         holder.mapImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AppCompatActivity activity = (AppCompatActivity) view.getContext();
                 Intent intent = new Intent(activity, MapActivity.class);
-                intent.putExtra("id", position);
-                intent.putExtra("MapWay", mapWays.get(position));
+                long id = MapWay.listAll(MapWay.class).get((holder.getAdapterPosition())).getId();
+                intent.putExtra("mapWayId", id);
+                intent.putExtra("adapterPosition", holder.getAdapterPosition());
                 activity.startActivityForResult(intent, 10);
             }
         });
@@ -74,7 +87,8 @@ public class MapWaysRecyclerAdapter extends RecyclerView.Adapter<MapWaysRecycler
                         .setMessage(R.string.delete_map_way_dialog_question)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(view.getContext(), "Delete " + position, Toast.LENGTH_SHORT).show();
+                                MapWay.listAll(MapWay.class).get((holder.getAdapterPosition())).delete();
+                                notifyItemRemoved(holder.getAdapterPosition());
                             }
                         })
                         .setNegativeButton(android.R.string.no, null)
@@ -82,10 +96,28 @@ public class MapWaysRecyclerAdapter extends RecyclerView.Adapter<MapWaysRecycler
                         .show();
             }
         });
+
+        holder.mapWayInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(view.getContext())
+                        .setTitle("Info")
+                        .setMessage(MapWay.listAll(MapWay.class).get(holder.getAdapterPosition()).getCreationDate())
+                        .setIcon(android.R.drawable.ic_dialog_dialer)
+                        .show();
+            }
+        });
+
+        holder.mapWaySend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return mapWays.size();
+        return MapWay.listAll(MapWay.class).size();
     }
 }
