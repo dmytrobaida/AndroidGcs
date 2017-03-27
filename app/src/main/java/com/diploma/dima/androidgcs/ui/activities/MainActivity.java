@@ -1,7 +1,6 @@
 package com.diploma.dima.androidgcs.ui.activities;
 
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -14,10 +13,7 @@ import android.widget.Toast;
 
 import com.diploma.dima.androidgcs.R;
 import com.diploma.dima.androidgcs.models.MapWay;
-import com.diploma.dima.androidgcs.ui.adapters.MapWaysRecyclerAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.diploma.dima.androidgcs.ui.adapters.MapWayRecyclerAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         waysRecycler.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         waysRecycler.setLayoutManager(mLayoutManager);
-        mAdapter = new MapWaysRecyclerAdapter();
+        mAdapter = new MapWayRecyclerAdapter();
         waysRecycler.setAdapter(mAdapter);
     }
 
@@ -59,11 +55,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
-
         switch (item.getItemId()) {
-            case R.id.connect_to_drone:
-                Intent intent = new Intent(this, DroneActivity.class);
+            case R.id.drones_connections:
+                Intent intent = new Intent(this, DronesActivity.class);
                 startActivity(intent);
                 return true;
 

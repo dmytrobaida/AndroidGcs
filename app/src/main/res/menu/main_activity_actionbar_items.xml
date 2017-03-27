@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/connect_to_drone"
+        android:id="@+id/drones_connections"
         android:icon="@drawable/ic_drone"
-        android:title="@string/connect_to_drone"
+        android:title="@string/drones_connections"
         app:showAsAction="always"/>
 
     <item

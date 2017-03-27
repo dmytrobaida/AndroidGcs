@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">AndroidGcs</string>
-    <string name="connect_to_drone">Connect to drone</string>
     <string name="add_new_way">Add new way</string>
     <string name="delete_waypoint_dialog_question">Are you sure you want to delete this point?</string>
     <string name="delete_waypoint_dialog_title">Delete point</string>
@@ -14,11 +13,15 @@
     <string name="delete_map_way_dialog_title">Delete way</string>
     <string name="delete_map_way_dialog_question">Are you sure you want to delete this way?</string>
 
-
     <string-array name="waypoint_types">
         <item>Way Point</item>
         <item>Takeoff</item>
         <item>Land</item>
     </string-array>
+    <string name="drones_connections">Drones conncetions</string>
+    <string name="connect_to_drone">Connect to drone</string>
+    <string name="ip_address">IP Address</string>
+    <string name="port">Port</string>
+    <string name="drone_connection_dialog_message">Wrong address</string>
 
 </resources>

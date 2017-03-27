@@ -3,8 +3,6 @@ package com.diploma.dima.androidgcs.ui.adapters;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -13,20 +11,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.diploma.dima.androidgcs.R;
 import com.diploma.dima.androidgcs.models.MapWay;
 import com.diploma.dima.androidgcs.ui.activities.MapActivity;
-import com.google.android.gms.maps.GoogleMap;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MapWaysRecyclerAdapter extends RecyclerView.Adapter<MapWaysRecyclerAdapter.ViewHolder> {
+public class MapWayRecyclerAdapter extends RecyclerView.Adapter<MapWayRecyclerAdapter.ViewHolder> {
     private View view;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -47,13 +42,13 @@ public class MapWaysRecyclerAdapter extends RecyclerView.Adapter<MapWaysRecycler
         }
     }
 
-    public MapWaysRecyclerAdapter() {
+    public MapWayRecyclerAdapter() {
     }
 
     @Override
-    public MapWaysRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MapWayRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         view = LayoutInflater.from(parent.getContext()).inflate(R.layout.map_way_recycler_item, parent, false);
-        return new ViewHolder(view);
+        return new MapWayRecyclerAdapter.ViewHolder(view);
     }
 
     @Override
@@ -64,7 +59,7 @@ public class MapWaysRecyclerAdapter extends RecyclerView.Adapter<MapWaysRecycler
         Bitmap logo = mapWays.get(holder.getAdapterPosition()).getLogo(view.getContext());
         if (logo != null) {
             holder.mapImageButton.setImageBitmap(logo);
-        }else {
+        } else {
             holder.mapImageButton.setImageBitmap(null);
         }
         holder.mapImageButton.setOnClickListener(new View.OnClickListener() {

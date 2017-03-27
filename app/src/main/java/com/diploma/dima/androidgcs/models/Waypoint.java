@@ -1,14 +1,16 @@
 package com.diploma.dima.androidgcs.models;
 
+import com.diploma.dima.androidgcs.mavconnection.gcs.MAVLink.common.msg_mission_item;
+import com.diploma.dima.androidgcs.mavconnection.gcs.MAVLink.enums.MAV_CMD;
 import com.google.android.gms.maps.model.LatLng;
 import com.orm.SugarRecord;
 
 import java.io.Serializable;
 
 public class Waypoint extends SugarRecord {
-    double x;
-    double y;
-    double height;
+    float x;
+    float y;
+    float height;
     WayPointType wayPointType;
 
     MapWay mapWay;
@@ -20,7 +22,7 @@ public class Waypoint extends SugarRecord {
         wayPointType = WayPointType.WayPoint;
     }
 
-    public Waypoint(double x, double y, float height, MapWay mapWay, WayPointType wayPointType) {
+    public Waypoint(float x, float y, float height, MapWay mapWay, WayPointType wayPointType) {
         this.x = x;
         this.y = y;
         this.height = height;
@@ -28,27 +30,27 @@ public class Waypoint extends SugarRecord {
         this.mapWay = mapWay;
     }
 
-    public double getX() {
+    public float getX() {
         return x;
     }
 
-    public void setX(double x) {
+    public void setX(float x) {
         this.x = x;
     }
 
-    public double getY() {
+    public float getY() {
         return y;
     }
 
-    public void setY(double y) {
+    public void setY(float y) {
         this.y = y;
     }
 
-    public double getHeight() {
+    public float getHeight() {
         return height;
     }
 
-    public void setHeight(double height) {
+    public void setHeight(float height) {
         this.height = height;
     }
 
@@ -62,5 +64,26 @@ public class Waypoint extends SugarRecord {
 
     public WayPointType getWayPointType(){
         return wayPointType;
+    }
+
+    public msg_mission_item getMavLinkItem(){
+        msg_mission_item item = new msg_mission_item();
+        item.x = x;
+        item.y = y;
+        item.z = height;
+
+        switch (wayPointType){
+            case TakeOff:
+                item.command = MAV_CMD.MAV_CMD_NAV_TAKEOFF;
+                break;
+            case Land:
+                item.command = MAV_CMD.MAV_CMD_NAV_LAND;
+                break;
+            case WayPoint:
+                item.command = MAV_CMD.MAV_CMD_NAV_WAYPOINT;
+                break;
+        }
+
+        return item;
     }
 }

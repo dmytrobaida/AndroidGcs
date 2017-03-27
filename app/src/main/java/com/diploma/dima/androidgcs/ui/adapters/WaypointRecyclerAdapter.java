@@ -28,8 +28,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class WaypointRecyclerAdapter extends RecyclerView.Adapter<WaypointRecyclerAdapter.ViewHolder> {
-    long mapWayId;
-    IResultAction action;
+    private long mapWayId;
+    private IResultAction action;
 
     public WaypointRecyclerAdapter(long mapWayId, IResultAction action) {
         this.mapWayId = mapWayId;
@@ -123,9 +123,9 @@ public class WaypointRecyclerAdapter extends RecyclerView.Adapter<WaypointRecycl
                 EditWaypointDialog editWaypointDialog = EditWaypointDialog.newInstance(wp, new IPointAction() {
                     @Override
                     public void done(double x, double y, double height) {
-                        wp.setX(x);
-                        wp.setY(y);
-                        wp.setHeight(height);
+                        wp.setX((float) x);
+                        wp.setY((float) y);
+                        wp.setHeight((float) height);
                         wp.save();
                         notifyItemChanged(wps.indexOf(wp));
                         action.doAction();

@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">AndroidGcs</string>
     <string name="add_new_way">Добавить новый путь</string>
-    <string name="connect_to_drone">Присоединиться к дрону</string>
+    <string name="drones_connections">Соединения с дронами</string>
     <string name="delete_waypoint_dialog_question">Действительно ли вы хотите удалить эту точку?</string>
     <string name="delete_waypoint_dialog_title">Удаление точки</string>
     <string name="x_coordinate">Координата X:</string>
@@ -14,4 +14,8 @@
     <string name="save_waypoints">Сохранить точки</string>
     <string name="delete_map_way_dialog_title">Удаление пути</string>
     <string name="delete_map_way_dialog_question">Действительно ли вы хотите удалить этот путь?</string>
+    <string name="connect_to_drone">Connect to drone</string>
+    <string name="ip_address">IP Адрес</string>
+    <string name="port">Порт</string>
+    <string name="drone_connection_dialog_message">Wrong address</string>
 </resources>
