@@ -11,7 +11,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.diploma.dima.androidgcs.GcsApplication;
 import com.diploma.dima.androidgcs.R;
+import com.diploma.dima.androidgcs.mavconnection.gcs.Vehicle;
 import com.diploma.dima.androidgcs.models.MapWay;
 import com.diploma.dima.androidgcs.ui.adapters.MapWayRecyclerAdapter;
 
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         waysRecycler.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         waysRecycler.setLayoutManager(mLayoutManager);
-        mAdapter = new MapWayRecyclerAdapter();
+        mAdapter = new MapWayRecyclerAdapter(((GcsApplication) getApplication()).getVehicles());
         waysRecycler.setAdapter(mAdapter);
     }
 

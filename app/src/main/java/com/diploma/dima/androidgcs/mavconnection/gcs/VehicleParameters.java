@@ -12,24 +12,24 @@ public class VehicleParameters {
     private float batteryVoltage, batteryCurrent;
     private int batteryRemaining;
 
-    public void setMissionCurrent(msg_mission_current missionCurrent) {
+    void setMissionCurrent(msg_mission_current missionCurrent) {
         currentMissionSeq = missionCurrent.seq;
     }
 
-    public void setGlobalPosition(msg_global_position_int globalPosition) {
+    void setGlobalPosition(msg_global_position_int globalPosition) {
         lat = globalPosition.lat / 10000000;
         lng = globalPosition.lon / 10000000;
         alt = globalPosition.alt / 1000;
         relativeAlt = globalPosition.relative_alt / 1000;
     }
 
-    public void setAttitude(msg_attitude attitude) {
+    void setAttitude(msg_attitude attitude) {
         roll = attitude.roll;
         pitch = attitude.pitch;
         yaw = attitude.yaw;
     }
 
-    public void setSysStatus(msg_sys_status sysStatus) {
+    void setSysStatus(msg_sys_status sysStatus) {
         batteryVoltage = sysStatus.voltage_battery / 1000;
         batteryCurrent = sysStatus.current_battery / 100;
         batteryRemaining = sysStatus.battery_remaining;

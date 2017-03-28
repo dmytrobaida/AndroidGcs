@@ -34,7 +34,7 @@ public class UdpMavWorker extends Thread {
         DatagramPacket inputPacket = new DatagramPacket(bytePacket, bytePacket.length);
         try {
             while (!isInterrupted()) {
-                udpSocket.setSoTimeout(5000);
+              //  udpSocket.setSoTimeout(5000);
                 udpSocket.receive(inputPacket);
                 MAVLinkPacket packet = PacketParser.parse(bytePacket);
                 if (packet != null) {

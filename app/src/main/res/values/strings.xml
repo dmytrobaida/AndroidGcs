@@ -23,5 +23,7 @@
     <string name="ip_address">IP Address</string>
     <string name="port">Port</string>
     <string name="drone_connection_dialog_message">Wrong address</string>
+    <string name="choose_drone">Choose drone:</string>
+    <string name="disconnect_drone">Disconnect</string>
 
 </resources>

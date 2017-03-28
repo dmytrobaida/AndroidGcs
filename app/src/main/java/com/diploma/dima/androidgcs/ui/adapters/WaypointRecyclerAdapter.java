@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.diploma.dima.androidgcs.R;
+import com.diploma.dima.androidgcs.mavconnection.gcs.interfaces.Action;
 import com.diploma.dima.androidgcs.models.MapWay;
 import com.diploma.dima.androidgcs.models.WayPointType;
 import com.diploma.dima.androidgcs.models.Waypoint;

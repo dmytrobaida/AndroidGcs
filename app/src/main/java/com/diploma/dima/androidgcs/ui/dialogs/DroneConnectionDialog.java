@@ -3,6 +3,7 @@ package com.diploma.dima.androidgcs.ui.dialogs;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +19,9 @@ import butterknife.ButterKnife;
 
 public class DroneConnectionDialog extends DialogFragment {
     @BindView(R.id.drone_address)
-    EditText droneAddress;
+    TextInputLayout droneAddress;
     @BindView(R.id.drone_port)
-    EditText dronePort;
+    TextInputLayout dronePort;
     @BindView(R.id.submit_drone)
     Button submitDrone;
 
@@ -47,8 +48,8 @@ public class DroneConnectionDialog extends DialogFragment {
             @Override
             public void onClick(View view) {
                 try {
-                    int port = Integer.parseInt(dronePort.getText().toString());
-                    IpPortAddress ipPortAddress = new IpPortAddress(droneAddress.getText().toString(), port);
+                    int port = Integer.parseInt(dronePort.getEditText().getText().toString());
+                    IpPortAddress ipPortAddress = new IpPortAddress(droneAddress.getEditText().getText().toString(), port);
                     onDone.done(ipPortAddress);
                     dismiss();
                 } catch (Exception ex) {

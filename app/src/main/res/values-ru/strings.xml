@@ -14,8 +14,10 @@
     <string name="save_waypoints">Сохранить точки</string>
     <string name="delete_map_way_dialog_title">Удаление пути</string>
     <string name="delete_map_way_dialog_question">Действительно ли вы хотите удалить этот путь?</string>
-    <string name="connect_to_drone">Connect to drone</string>
+    <string name="connect_to_drone">Присоединиться к дрону</string>
     <string name="ip_address">IP Адрес</string>
     <string name="port">Порт</string>
-    <string name="drone_connection_dialog_message">Wrong address</string>
+    <string name="drone_connection_dialog_message">Неправильный адрес</string>
+    <string name="choose_drone">Выберите дрон:</string>
+    <string name="disconnect_drone">Отключить</string>
 </resources>

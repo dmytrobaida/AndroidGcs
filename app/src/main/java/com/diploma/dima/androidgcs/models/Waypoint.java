@@ -30,6 +30,25 @@ public class Waypoint extends SugarRecord {
         this.mapWay = mapWay;
     }
 
+    public Waypoint(msg_mission_item missionItem, MapWay mapWay) {
+        this.x = missionItem.x;
+        this.y = missionItem.y;
+        this.height = missionItem.z;
+        this.mapWay = mapWay;
+
+        switch (missionItem.command) {
+            case MAV_CMD.MAV_CMD_NAV_TAKEOFF:
+                wayPointType = WayPointType.TakeOff;
+                break;
+            case MAV_CMD.MAV_CMD_NAV_LAND:
+                wayPointType = WayPointType.Land;
+                break;
+            case MAV_CMD.MAV_CMD_NAV_WAYPOINT:
+                wayPointType = WayPointType.WayPoint;
+                break;
+        }
+    }
+
     public float getX() {
         return x;
     }
@@ -58,21 +77,21 @@ public class Waypoint extends SugarRecord {
         return new LatLng(x, y);
     }
 
-    public void setWayPointType(WayPointType type){
+    public void setWayPointType(WayPointType type) {
         wayPointType = type;
     }
 
-    public WayPointType getWayPointType(){
+    public WayPointType getWayPointType() {
         return wayPointType;
     }
 
-    public msg_mission_item getMavLinkItem(){
+    public msg_mission_item getMavLinkItem() {
         msg_mission_item item = new msg_mission_item();
         item.x = x;
         item.y = y;
         item.z = height;
 
-        switch (wayPointType){
+        switch (wayPointType) {
             case TakeOff:
                 item.command = MAV_CMD.MAV_CMD_NAV_TAKEOFF;
                 break;

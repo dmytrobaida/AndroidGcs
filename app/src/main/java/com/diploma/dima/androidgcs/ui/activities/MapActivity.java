@@ -1,19 +1,21 @@
 package com.diploma.dima.androidgcs.ui.activities;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -30,6 +32,8 @@ import com.diploma.dima.androidgcs.models.WayPointType;
 import com.diploma.dima.androidgcs.models.Waypoint;
 import com.diploma.dima.androidgcs.ui.adapters.WaypointRecyclerAdapter;
 import com.diploma.dima.androidgcs.ui.interfaces.IResultAction;
+import com.diploma.dima.androidgcs.utils.DialogBuilders;
+import com.diploma.dima.androidgcs.utils.WaypointsConverter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -65,6 +69,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     ArrayList<Marker> markers = new ArrayList<>();
 
     private List<Vehicle> vehicles;
+    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +78,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         ButterKnife.bind(this);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        mHandler = new Handler();
 
         GcsApplication application = (GcsApplication) getApplication();
         vehicles = application.getVehicles();
@@ -108,35 +115,38 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 return true;
 
             case R.id.upload_waypoints:
+                if (vehicles.size() > 0) {
+                    DialogBuilders.createAlertDialogWithSpinner(this, vehicles, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            AlertDialog thisDialog = (AlertDialog) dialog;
+                            Spinner spinner = (Spinner) thisDialog.findViewById(R.id.drone_spinner);
+                            Vehicle vehicle = (Vehicle) spinner.getSelectedItem();
+                            if (vehicle != null) {
+                                sendPoints(vehicle, mapWay.getWaypoints());
+                            }
+                        }
+                    }).show();
+                } else {
+                    Toast.makeText(this, "Please connect to drone", Toast.LENGTH_SHORT).show();
+                }
+
                 return true;
 
             case R.id.download_waypoints:
-                final ArrayAdapter<Vehicle> adp = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, vehicles);
-                final Spinner sp = new Spinner(this);
-                sp.setId(R.id.dialogSpinner);
-                sp.setLayoutParams(new LinearLayout.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT, RecyclerView.LayoutParams.WRAP_CONTENT));
-                sp.setAdapter(adp);
-
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-                alertBuilder.setView(sp);
-                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        AlertDialog thisDialog = (AlertDialog) dialog;
-                        Spinner spinner = (Spinner) thisDialog.findViewById(R.id.dialogSpinner);
-                        Vehicle vehicle = (Vehicle) spinner.getSelectedItem();
-                        try {
-                            vehicle.receivePoints(new ActionWithMessage<List<msg_mission_item>>() {
-                                @Override
-                                public void handle(List<msg_mission_item> message) {
-                                    Log.d("Points", message.toString());
-                                }
-                            });
-                        } catch (VehicleBusyException e) {
-                            e.printStackTrace();
+                if (vehicles.size() > 0) {
+                    DialogBuilders.createAlertDialogWithSpinner(this, vehicles, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            AlertDialog thisDialog = (AlertDialog) dialog;
+                            Spinner spinner = (Spinner) thisDialog.findViewById(R.id.drone_spinner);
+                            Vehicle vehicle = (Vehicle) spinner.getSelectedItem();
+                            if (vehicle != null) {
+                                receivePoints(vehicle);
+                            }
                         }
-                    }
-                });
-                alertBuilder.create().show();
+                    }).show();
+                } else {
+                    Toast.makeText(this, "Please connect to drone", Toast.LENGTH_SHORT).show();
+                }
 
                 return true;
 
@@ -161,13 +171,58 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
+    private void sendPoints(Vehicle vehicle, List<Waypoint> waypoints) {
+        try {
+            final Context context = this;
+            vehicle.sendPoints(WaypointsConverter.convert(waypoints), new ActionWithMessage<String>() {
+                @Override
+                public void handle(String message) {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
+        } catch (VehicleBusyException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void receivePoints(Vehicle vehicle) {
+        for (final Waypoint waypoint : mapWay.getWaypoints()) {
+            waypoint.delete();
+        }
+        mAdapter.notifyDataSetChanged();
+
+        try {
+            vehicle.receivePoints(new ActionWithMessage<List<msg_mission_item>>() {
+                @Override
+                public void handle(List<msg_mission_item> message) {
+                    for (final Waypoint waypoint : WaypointsConverter.convertBack(message, mapWay)) {
+                        waypoint.save();
+                    }
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+            });
+        } catch (VehicleBusyException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onMapReady(GoogleMap map) {
         map.clear();
         lineOptions = new PolylineOptions().color(Color.BLUE);
         markers.clear();
         googleMap = map;
-
         builder = new LatLngBounds.Builder();
 
         for (Waypoint waypoint : mapWay.getWaypoints()) {

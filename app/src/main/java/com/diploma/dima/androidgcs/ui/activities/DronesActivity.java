@@ -17,6 +17,7 @@ import com.diploma.dima.androidgcs.R;
 import com.diploma.dima.androidgcs.mavconnection.gcs.Gcs;
 import com.diploma.dima.androidgcs.mavconnection.gcs.Vehicle;
 import com.diploma.dima.androidgcs.mavconnection.gcs.exceptions.GcsNotListeningException;
+import com.diploma.dima.androidgcs.mavconnection.gcs.interfaces.Action;
 import com.diploma.dima.androidgcs.mavconnection.gcs.interfaces.ConnectionHandler;
 import com.diploma.dima.androidgcs.mavconnection.gcs.network.IpPortAddress;
 import com.diploma.dima.androidgcs.ui.adapters.DroneRecyclerAdapter;
@@ -49,14 +50,14 @@ public class DronesActivity extends AppCompatActivity {
 
         mHandler = new Handler();
         GcsApplication application = (GcsApplication) getApplication();
+        gcs = application.getGroundControlStation();
         vehicles = application.getVehicles();
 
         mLayoutManager = new LinearLayoutManager(this);
         droneRecycler.setLayoutManager(mLayoutManager);
-        mAdapter = new DroneRecyclerAdapter(vehicles);
+        mAdapter = new DroneRecyclerAdapter(gcs, vehicles);
         droneRecycler.setAdapter(mAdapter);
 
-        gcs = application.getGroundControlStation();
     }
 
     @Override
@@ -75,42 +76,46 @@ public class DronesActivity extends AppCompatActivity {
                 return true;
 
             case R.id.connect_to_drone:
-                DroneConnectionDialog.newInstance(new IDroneAction() {
-                    @Override
-                    public void done(IpPortAddress address) {
-                        try {
-                            gcs.connectToVehicle(address, new ConnectionHandler() {
-                                @Override
-                                public void success(final Vehicle vehicle) {
-                                    mHandler.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            vehicles.add(vehicle);
-                                            mAdapter.notifyItemInserted(vehicles.indexOf(vehicle));
-                                        }
-                                    });
-                                }
-
-                                @Override
-                                public void failure(Vehicle vehicle) {
-                                    mHandler.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toast.makeText(context, "Fail connection", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                }
-                            });
-                        } catch (GcsNotListeningException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).show(getFragmentManager(), "Drone");
+                connectToDrone();
 
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void connectToDrone() {
+        DroneConnectionDialog.newInstance(new IDroneAction() {
+            @Override
+            public void done(IpPortAddress address) {
+                try {
+                    gcs.connectToVehicle(address, new ConnectionHandler() {
+                        @Override
+                        public void success(final Vehicle vehicle) {
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    vehicles.add(vehicle);
+                                    mAdapter.notifyItemInserted(vehicles.indexOf(vehicle));
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void failure(Vehicle vehicle) {
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(context, "Fail connection", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    });
+                } catch (GcsNotListeningException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).show(getFragmentManager(), "Drone");
     }
 }
