@@ -69,6 +69,11 @@ public class MainActivity extends AppCompatActivity {
                 mAdapter.notifyItemInserted(MapWay.listAll(MapWay.class).size() - 1);
                 return true;
 
+            case R.id.app_settings:
+                Intent setIntent = new Intent(this, SettingsActivity.class);
+                startActivity(setIntent);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

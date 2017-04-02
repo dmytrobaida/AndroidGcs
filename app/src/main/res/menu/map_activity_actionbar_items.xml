@@ -11,6 +11,13 @@
         android:icon="@drawable/ic_upload"
         android:title="@string/upload_waypoints"
         app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/generate_points"
+        android:icon="@drawable/ic_generate_points"
+        android:title="@string/gen_points"
+        app:showAsAction="always"/>
+
     <item
         android:id="@+id/snapshot_waypoints"
         android:icon="@drawable/ic_snapshot"

@@ -1,13 +1,14 @@
 package com.diploma.dima.androidgcs.ui.activities;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,9 +16,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -33,6 +31,7 @@ import com.diploma.dima.androidgcs.models.Waypoint;
 import com.diploma.dima.androidgcs.ui.adapters.WaypointRecyclerAdapter;
 import com.diploma.dima.androidgcs.ui.interfaces.IResultAction;
 import com.diploma.dima.androidgcs.utils.DialogBuilders;
+import com.diploma.dima.androidgcs.utils.LandPointGenerator;
 import com.diploma.dima.androidgcs.utils.WaypointsConverter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -71,6 +70,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private List<Vehicle> vehicles;
     private Handler mHandler;
 
+    SharedPreferences prefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +79,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         ButterKnife.bind(this);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         mHandler = new Handler();
 
@@ -127,7 +129,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         }
                     }).show();
                 } else {
-                    Toast.makeText(this, "Please connect to drone", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.please_connect, Toast.LENGTH_SHORT).show();
                 }
 
                 return true;
@@ -145,7 +147,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         }
                     }).show();
                 } else {
-                    Toast.makeText(this, "Please connect to drone", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.please_connect, Toast.LENGTH_SHORT).show();
                 }
 
                 return true;
@@ -166,6 +168,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 });
                 return true;
 
+            case R.id.generate_points:
+                if (mapWay.getWaypoints().size() > 1) {
+                    LandPointGenerator.generate(mapWay.getWaypoints(), mapWay, 0.1f);
+                    mAdapter.notifyDataSetChanged();
+                }
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -180,7 +189,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, R.string.success, Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -258,7 +267,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     public void onMapLongClick(LatLng latLng) {
         builder.include(latLng);
-        Waypoint waypoint = new Waypoint((float) latLng.latitude, (float) latLng.longitude, 10, mapWay, WayPointType.WayPoint);
+        float defHeight = Float.parseFloat(prefs.getString("default_height", "10"));
+        Waypoint waypoint = new Waypoint((float) latLng.latitude, (float) latLng.longitude, defHeight, mapWay, WayPointType.WayPoint);
         waypoint.save();
         mAdapter.notifyItemInserted(mapWay.getWaypoints().size() - 1);
 

@@ -17,7 +17,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.diploma.dima.androidgcs.GcsApplication;
 import com.diploma.dima.androidgcs.R;
 import com.diploma.dima.androidgcs.mavconnection.gcs.Vehicle;
 import com.diploma.dima.androidgcs.mavconnection.gcs.exceptions.VehicleBusyException;
@@ -134,7 +133,7 @@ public class MapWayRecyclerAdapter extends RecyclerView.Adapter<MapWayRecyclerAd
                         }
                     }).show();
                 } else {
-                    Toast.makeText(view.getContext(), "Please connect to drone", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(view.getContext(), R.string.please_connect, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -148,7 +147,7 @@ public class MapWayRecyclerAdapter extends RecyclerView.Adapter<MapWayRecyclerAd
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, R.string.success, Toast.LENGTH_SHORT).show();
                         }
                     });
                 }

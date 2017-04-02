@@ -8,6 +8,12 @@
         app:showAsAction="always"/>
 
     <item
+        android:id="@+id/app_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/settings"
+        app:showAsAction="always"/>
+
+    <item
         android:id="@+id/add_new_way"
         android:icon="@drawable/ic_plus"
         android:title="@string/add_new_way"

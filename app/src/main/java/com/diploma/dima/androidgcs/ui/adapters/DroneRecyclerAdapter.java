@@ -59,17 +59,17 @@ public class DroneRecyclerAdapter extends RecyclerView.Adapter<DroneRecyclerAdap
     public void onBindViewHolder(final DroneRecyclerAdapter.ViewHolder holder, int position) {
         final Vehicle vehicle = vehicles.get(holder.getAdapterPosition());
         holder.droneName.setText(vehicle.toString());
-        holder.droneBattery.setText(String.format("Remaining: %d; Voltage: %f; Current: %f",
+        holder.droneBattery.setText(String.format(view.getResources().getString(R.string.battery_str),
                 vehicle.getVehicleParameters().getBatteryRemaining(),
                 vehicle.getVehicleParameters().getBatteryVoltage(),
                 vehicle.getVehicleParameters().getBatteryCurrent()));
 
-        holder.droneAxis.setText(String.format("Yaw: %f; Pitch: %f; Roll: %f",
+        holder.droneAxis.setText(String.format(view.getResources().getString(R.string.ang_pos_str),
                 vehicle.getVehicleParameters().getYaw(),
                 vehicle.getVehicleParameters().getPitch(),
                 vehicle.getVehicleParameters().getRoll()));
 
-        holder.dronePosition.setText(String.format("Lat: %f; Lng: %f; Alt: %f",
+        holder.dronePosition.setText(String.format(view.getResources().getString(R.string.pos_str),
                 vehicle.getVehicleParameters().getLat(),
                 vehicle.getVehicleParameters().getLng(),
                 vehicle.getVehicleParameters().getAlt()));

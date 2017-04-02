@@ -107,7 +107,7 @@ public class DronesActivity extends AppCompatActivity {
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(context, "Fail connection", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, R.string.fail_con, Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }

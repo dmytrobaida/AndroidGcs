@@ -5,9 +5,9 @@
     <string name="drones_connections">Соединения с дронами</string>
     <string name="delete_waypoint_dialog_question">Действительно ли вы хотите удалить эту точку?</string>
     <string name="delete_waypoint_dialog_title">Удаление точки</string>
-    <string name="x_coordinate">Координата X:</string>
-    <string name="y_coordinate">Координата Y:</string>
-    <string name="height">Высота:</string>
+    <string name="x_coordinate">Координата X</string>
+    <string name="y_coordinate">Координата Y</string>
+    <string name="height">Высота</string>
     <string name="edit_route_dialog_error_message">Введите все координаты!</string>
     <string name="download_waypoints">Скачать точки</string>
     <string name="upload_waypoints">Загрузить точки</string>
@@ -18,6 +18,18 @@
     <string name="ip_address">IP Адрес</string>
     <string name="port">Порт</string>
     <string name="drone_connection_dialog_message">Неправильный адрес</string>
-    <string name="choose_drone">Выберите дрон:</string>
+    <string name="choose_drone">Выберите дрон</string>
     <string name="disconnect_drone">Отключить</string>
+    <string name="settings">Настройки</string>
+    <string name="def_height">Высота по умолчанию</string>
+    <string name="gen_points">Генерировать посадочные точки?</string>
+    <string name="gen">Генерировать</string>
+    <string name="drones">Дроны</string>
+    <string name="way">Путь</string>
+    <string name="please_connect">Пожалуйста присоединитесь к дрону</string>
+    <string name="success">Успешно передано</string>
+    <string name="battery_str" formatted="false">Осталось: %d; Вольтаж: %f; Напряжение: %f</string>
+    <string name="ang_pos_str" formatted="false">Рыскание: %f; Тангаж: %f; Крен: %f</string>
+    <string name="pos_str" formatted="false">Шир: %f; Долг: %f; Выс: %f</string>
+    <string name="fail_con">Fail connection</string>
 </resources>
