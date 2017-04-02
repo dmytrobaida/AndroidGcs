@@ -105,4 +105,8 @@ public class Waypoint extends SugarRecord {
 
         return item;
     }
+
+    public Waypoint clone() {
+        return new Waypoint(x, y, height, mapWay, wayPointType);
+    }
 }

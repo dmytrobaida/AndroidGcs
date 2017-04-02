@@ -170,8 +170,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             case R.id.generate_points:
                 if (mapWay.getWaypoints().size() > 1) {
-                    LandPointGenerator.generate(mapWay.getWaypoints(), mapWay, 0.1f);
+                    LandPointGenerator.generate(mapWay, 0.1f);
                     mAdapter.notifyDataSetChanged();
+                    onMapReady(googleMap);
                 }
                 return true;
 
