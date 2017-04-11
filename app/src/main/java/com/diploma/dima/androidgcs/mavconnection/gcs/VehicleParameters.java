@@ -2,8 +2,11 @@ package com.diploma.dima.androidgcs.mavconnection.gcs;
 
 import com.diploma.dima.androidgcs.mavconnection.gcs.MAVLink.common.msg_attitude;
 import com.diploma.dima.androidgcs.mavconnection.gcs.MAVLink.common.msg_global_position_int;
+import com.diploma.dima.androidgcs.mavconnection.gcs.MAVLink.common.msg_heartbeat;
 import com.diploma.dima.androidgcs.mavconnection.gcs.MAVLink.common.msg_mission_current;
 import com.diploma.dima.androidgcs.mavconnection.gcs.MAVLink.common.msg_sys_status;
+import com.diploma.dima.androidgcs.mavconnection.gcs.MAVLink.enums.MAV_MODE;
+import com.diploma.dima.androidgcs.mavconnection.gcs.MAVLink.enums.MAV_MODE_FLAG;
 
 public class VehicleParameters {
     private int currentMissionSeq;
@@ -11,6 +14,59 @@ public class VehicleParameters {
     private float roll, pitch, yaw; //Крен, Тангаж, Рысканье
     private float batteryVoltage, batteryCurrent;
     private int batteryRemaining;
+    private String mode;
+
+    void setMode(short baseMode){
+        switch (baseMode){
+            case MAV_MODE.MAV_MODE_AUTO_ARMED:
+                mode = "AUTO ARMED";
+                break;
+
+            case MAV_MODE.MAV_MODE_AUTO_DISARMED:
+                mode = "AUTO DISARMED";
+                break;
+
+            case MAV_MODE.MAV_MODE_GUIDED_ARMED:
+                mode = "GUIDED ARMED";
+                break;
+
+            case MAV_MODE.MAV_MODE_GUIDED_DISARMED:
+                mode = "GUIDED DISARMED";
+                break;
+
+            case MAV_MODE.MAV_MODE_MANUAL_ARMED:
+                mode = "MANUAL ARMED";
+                break;
+
+            case MAV_MODE.MAV_MODE_MANUAL_DISARMED:
+                mode = "MANUAL DISARMED";
+                break;
+
+            case MAV_MODE.MAV_MODE_PREFLIGHT:
+                mode = "PREFLIGHT";
+                break;
+
+            case MAV_MODE.MAV_MODE_STABILIZE_ARMED:
+                mode = "STABILIZE ARMED";
+                break;
+
+            case MAV_MODE.MAV_MODE_STABILIZE_DISARMED:
+                mode = "STABILIZE DISARMED";
+                break;
+
+            case MAV_MODE.MAV_MODE_TEST_ARMED:
+                mode = "TEST ARMED";
+                break;
+
+            case MAV_MODE.MAV_MODE_TEST_DISARMED:
+                mode = "TEST DISARMED";
+                break;
+
+            default:
+                mode = String.format("MODE(%d)", baseMode);
+                break;
+        }
+    }
 
     void setMissionCurrent(msg_mission_current missionCurrent) {
         currentMissionSeq = missionCurrent.seq;
@@ -77,5 +133,9 @@ public class VehicleParameters {
 
     public int getBatteryRemaining() {
         return batteryRemaining;
+    }
+
+    public String getMode() {
+        return mode;
     }
 }

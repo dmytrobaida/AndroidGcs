@@ -1,6 +1,8 @@
 package com.diploma.dima.androidgcs.ui.adapters;
 
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -12,10 +14,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.diploma.dima.androidgcs.R;
-import com.diploma.dima.androidgcs.mavconnection.gcs.interfaces.Action;
 import com.diploma.dima.androidgcs.models.MapWay;
 import com.diploma.dima.androidgcs.models.WayPointType;
 import com.diploma.dima.androidgcs.models.Waypoint;
@@ -60,6 +60,7 @@ public class WaypointRecyclerAdapter extends RecyclerView.Adapter<WaypointRecycl
 
         final AppCompatActivity activity;
         ArrayAdapter<WayPointType> adapter;
+        SharedPreferences prefs;
 
         ViewHolder(final View v) {
             super(v);
@@ -69,6 +70,7 @@ public class WaypointRecyclerAdapter extends RecyclerView.Adapter<WaypointRecycl
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(adapter);
             activity = (AppCompatActivity) v.getContext();
+            prefs = PreferenceManager.getDefaultSharedPreferences(activity);
         }
     }
 
@@ -87,6 +89,10 @@ public class WaypointRecyclerAdapter extends RecyclerView.Adapter<WaypointRecycl
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 List<Waypoint> waypoints = MapWay.findById(MapWay.class, mapWayId).getWaypoints();
                 waypoints.get(holder.getAdapterPosition()).setWayPointType((WayPointType) adapterView.getSelectedItem());
+                if(waypoints.get(holder.getAdapterPosition()).getWayPointType() == WayPointType.TakeOff){
+                    float takeOffAngle = Float.parseFloat(holder.prefs.getString("takeoff_angle", "30"));
+                    waypoints.get(holder.getAdapterPosition()).setTakeOffAngle(takeOffAngle);
+                }
                 waypoints.get(holder.getAdapterPosition()).save();
                 action.doAction();
             }
@@ -119,16 +125,16 @@ public class WaypointRecyclerAdapter extends RecyclerView.Adapter<WaypointRecycl
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final List<Waypoint> wps = MapWay.findById(MapWay.class, mapWayId).getWaypoints();
-                final Waypoint wp = wps.get(holder.getAdapterPosition());
-                EditWaypointDialog editWaypointDialog = EditWaypointDialog.newInstance(wp, new IPointAction() {
+                final List<Waypoint> wayPoints = MapWay.findById(MapWay.class, mapWayId).getWaypoints();
+                final Waypoint wayPoint = wayPoints.get(holder.getAdapterPosition());
+                EditWaypointDialog editWaypointDialog = EditWaypointDialog.newInstance(wayPoint, new IPointAction() {
                     @Override
                     public void done(double x, double y, double height) {
-                        wp.setX((float) x);
-                        wp.setY((float) y);
-                        wp.setHeight((float) height);
-                        wp.save();
-                        notifyItemChanged(wps.indexOf(wp));
+                        wayPoint.setX((float) x);
+                        wayPoint.setY((float) y);
+                        wayPoint.setHeight((float) height);
+                        wayPoint.save();
+                        notifyItemChanged(wayPoints.indexOf(wayPoint));
                         action.doAction();
                     }
                 });

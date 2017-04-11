@@ -5,13 +5,14 @@ import com.diploma.dima.androidgcs.mavconnection.gcs.MAVLink.enums.MAV_CMD;
 import com.google.android.gms.maps.model.LatLng;
 import com.orm.SugarRecord;
 
-import java.io.Serializable;
-
 public class Waypoint extends SugarRecord {
     float x;
     float y;
     float height;
     WayPointType wayPointType;
+
+    //Param 1
+    float takeOffAngle;
 
     MapWay mapWay;
 
@@ -20,6 +21,7 @@ public class Waypoint extends SugarRecord {
         y = 0;
         height = 0;
         wayPointType = WayPointType.WayPoint;
+        takeOffAngle = 30;
     }
 
     public Waypoint(float x, float y, float height, MapWay mapWay, WayPointType wayPointType) {
@@ -28,6 +30,7 @@ public class Waypoint extends SugarRecord {
         this.height = height;
         this.wayPointType = wayPointType;
         this.mapWay = mapWay;
+        takeOffAngle = 30;
     }
 
     public Waypoint(msg_mission_item missionItem, MapWay mapWay) {
@@ -73,7 +76,15 @@ public class Waypoint extends SugarRecord {
         this.height = height;
     }
 
-    public LatLng getlatLng() {
+    public void setTakeOffAngle(float takeOffAngle) {
+        this.takeOffAngle = takeOffAngle;
+    }
+
+    public float getTakeOffAngle() {
+        return takeOffAngle;
+    }
+
+    public LatLng getLatLng() {
         return new LatLng(x, y);
     }
 
@@ -94,6 +105,7 @@ public class Waypoint extends SugarRecord {
         switch (wayPointType) {
             case TakeOff:
                 item.command = MAV_CMD.MAV_CMD_NAV_TAKEOFF;
+                item.param1 = takeOffAngle;
                 break;
             case Land:
                 item.command = MAV_CMD.MAV_CMD_NAV_LAND;

@@ -5,4 +5,16 @@
         android:summary="@string/def_height"
         android:title="@string/height"
         android:inputType="numberDecimal|numberSigned"/>
+
+    <EditTextPreference
+        android:key="land_gradient"
+        android:summary="@string/land_gradient"
+        android:title="@string/gradient"
+        android:inputType="numberDecimal|numberSigned"/>
+
+    <EditTextPreference
+        android:key="takeoff_angle"
+        android:summary="@string/takeoff_angle"
+        android:title="@string/angle"
+        android:inputType="numberDecimal|numberSigned"/>
 </PreferenceScreen>

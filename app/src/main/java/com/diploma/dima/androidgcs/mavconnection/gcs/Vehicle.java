@@ -84,9 +84,9 @@ public class Vehicle implements PacketHandler {
         switch (message.msgid) {
             case msg_heartbeat.MAVLINK_MSG_ID_HEARTBEAT:
                 msg_heartbeat heartbeat = (msg_heartbeat) message;
-
                 sysid = (short) heartbeat.sysid;
                 compid = (short) heartbeat.compid;
+                vehicleParameters.setMode(heartbeat.base_mode);
                 if (!connected) {
                     timer.cancel();
                     connected = true;

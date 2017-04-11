@@ -33,6 +33,8 @@ public class DroneRecyclerAdapter extends RecyclerView.Adapter<DroneRecyclerAdap
         TextView droneBattery;
         @BindView(R.id.disconnect_drone)
         Button disconnectDrone;
+        @BindView(R.id.drone_mode)
+        TextView droneMode;
 
         ViewHolder(final View v) {
             super(v);
@@ -59,6 +61,7 @@ public class DroneRecyclerAdapter extends RecyclerView.Adapter<DroneRecyclerAdap
     public void onBindViewHolder(final DroneRecyclerAdapter.ViewHolder holder, int position) {
         final Vehicle vehicle = vehicles.get(holder.getAdapterPosition());
         holder.droneName.setText(vehicle.toString());
+        holder.droneMode.setText(vehicle.getVehicleParameters().getMode());
         holder.droneBattery.setText(String.format(view.getResources().getString(R.string.battery_str),
                 vehicle.getVehicleParameters().getBatteryRemaining(),
                 vehicle.getVehicleParameters().getBatteryVoltage(),

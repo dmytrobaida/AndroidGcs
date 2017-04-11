@@ -5,10 +5,9 @@ import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 
 import com.diploma.dima.androidgcs.utils.BitmapWorker;
-import com.diploma.dima.androidgcs.utils.Utility;
+import com.diploma.dima.androidgcs.utils.Numbers;
 import com.orm.SugarRecord;
 
-import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,7 +52,7 @@ public class MapWay extends SugarRecord {
 
     public void setLogo(Context context, Bitmap logo) {
         if (logo != null) {
-            logoPath = String.format("%s%s", title, Utility.random(10));
+            logoPath = String.format("%s%s", title, Numbers.random(10));
             BitmapWorker.saveFile(context, logo, logoPath);
         }
     }

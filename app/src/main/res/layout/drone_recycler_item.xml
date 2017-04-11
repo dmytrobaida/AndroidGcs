@@ -32,6 +32,12 @@
             android:layout_width="match_parent"
             android:layout_height="35dp" />
 
+        <TextView
+            android:id="@+id/drone_mode"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:textSize="30sp"/>
+
         <Button
             android:id="@+id/disconnect_drone"
             android:layout_width="match_parent"

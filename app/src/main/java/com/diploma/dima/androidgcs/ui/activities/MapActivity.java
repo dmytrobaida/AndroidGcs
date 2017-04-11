@@ -9,6 +9,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -62,6 +64,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     RecyclerView.Adapter mAdapter;
     RecyclerView.LayoutManager mLayoutManager;
 
+    @BindView(R.id.main_appbar)
+    AppBarLayout appBarLayout;
+
     MapWay mapWay;
     int adapterPosition;
     LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -69,7 +74,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private List<Vehicle> vehicles;
     private Handler mHandler;
-
     SharedPreferences prefs;
 
     @Override
@@ -79,10 +83,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         ButterKnife.bind(this);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+        AppBarLayout.Behavior behavior = new AppBarLayout.Behavior();
+        behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
+            @Override
+            public boolean canDrag(AppBarLayout appBarLayout) {
+                return false;
+            }
+        });
+        params.setBehavior(behavior);
+
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
         mHandler = new Handler();
-
         GcsApplication application = (GcsApplication) getApplication();
         vehicles = application.getVehicles();
 
@@ -170,7 +183,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             case R.id.generate_points:
                 if (mapWay.getWaypoints().size() > 1) {
-                    LandPointGenerator.generate(mapWay, 0.1f);
+                    float gradient = Float.parseFloat(prefs.getString("takeoff_gradient", "0.1"));
+                    LandPointGenerator.generate(mapWay, gradient);
                     mAdapter.notifyDataSetChanged();
                     onMapReady(googleMap);
                 }
@@ -186,11 +200,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             final Context context = this;
             vehicle.sendPoints(WaypointsConverter.convert(waypoints), new ActionWithMessage<String>() {
                 @Override
-                public void handle(String message) {
+                public void handle(final String message) {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(context, R.string.success, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -236,7 +250,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         builder = new LatLngBounds.Builder();
 
         for (Waypoint waypoint : mapWay.getWaypoints()) {
-            LatLng latLng = waypoint.getlatLng();
+            LatLng latLng = waypoint.getLatLng();
             builder.include(latLng);
             MarkerOptions markerOptions = new MarkerOptions().position(latLng).draggable(true);
 

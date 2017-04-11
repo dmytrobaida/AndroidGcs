@@ -31,5 +31,9 @@
     <string name="battery_str" formatted="false">Осталось: %d; Вольтаж: %f; Напряжение: %f</string>
     <string name="ang_pos_str" formatted="false">Рыскание: %f; Тангаж: %f; Крен: %f</string>
     <string name="pos_str" formatted="false">Шир: %f; Долг: %f; Выс: %f</string>
-    <string name="fail_con">Fail connection</string>
+    <string name="fail_con">Неудачное соединение</string>
+    <string name="land_gradient">Градиент посадки</string>
+    <string name="gradient">Градиент</string>
+    <string name="angle">Угол</string>
+    <string name="takeoff_angle">Угол взлета</string>
 </resources>

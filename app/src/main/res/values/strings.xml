@@ -36,4 +36,8 @@
     <string name="ang_pos_str" formatted="false">Yaw: %f; Pitch: %f; Roll: %f</string>
     <string name="pos_str" formatted="false">Lat: %f; Lng: %f; Alt: %f</string>
     <string name="fail_con">Fail connection</string>
+    <string name="land_gradient">Land gradient</string>
+    <string name="gradient">Gradient</string>
+    <string name="angle">Angle</string>
+    <string name="takeoff_angle">TakeOff Angle</string>
 </resources>
