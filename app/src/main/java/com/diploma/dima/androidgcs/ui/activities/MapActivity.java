@@ -34,7 +34,7 @@ import com.diploma.dima.androidgcs.ui.adapters.WaypointRecyclerAdapter;
 import com.diploma.dima.androidgcs.ui.interfaces.IResultAction;
 import com.diploma.dima.androidgcs.utils.DialogBuilders;
 import com.diploma.dima.androidgcs.utils.LandPointGenerator;
-import com.diploma.dima.androidgcs.utils.WaypointsConverter;
+import com.diploma.dima.androidgcs.utils.WaypointConverter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -198,7 +198,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private void sendPoints(Vehicle vehicle, List<Waypoint> waypoints) {
         try {
             final Context context = this;
-            vehicle.sendPoints(WaypointsConverter.convert(waypoints), new ActionWithMessage<String>() {
+            vehicle.sendPoints(WaypointConverter.convert(waypoints), new ActionWithMessage<String>() {
                 @Override
                 public void handle(final String message) {
                     mHandler.post(new Runnable() {
@@ -224,7 +224,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             vehicle.receivePoints(new ActionWithMessage<List<msg_mission_item>>() {
                 @Override
                 public void handle(List<msg_mission_item> message) {
-                    for (final Waypoint waypoint : WaypointsConverter.convertBack(message, mapWay)) {
+                    for (final Waypoint waypoint : WaypointConverter.convertBack(message, mapWay)) {
                         waypoint.save();
                     }
 

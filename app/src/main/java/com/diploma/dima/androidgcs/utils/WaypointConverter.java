@@ -7,7 +7,7 @@ import com.diploma.dima.androidgcs.models.Waypoint;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WaypointsConverter {
+public class WaypointConverter {
 
     public static List<msg_mission_item> convert(List<Waypoint> waypoints) {
         ArrayList<msg_mission_item> newArray = new ArrayList<>();

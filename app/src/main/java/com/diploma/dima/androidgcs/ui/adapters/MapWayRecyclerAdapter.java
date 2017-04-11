@@ -25,7 +25,7 @@ import com.diploma.dima.androidgcs.models.MapWay;
 import com.diploma.dima.androidgcs.models.Waypoint;
 import com.diploma.dima.androidgcs.ui.activities.MapActivity;
 import com.diploma.dima.androidgcs.utils.DialogBuilders;
-import com.diploma.dima.androidgcs.utils.WaypointsConverter;
+import com.diploma.dima.androidgcs.utils.WaypointConverter;
 
 import java.util.List;
 
@@ -141,7 +141,7 @@ public class MapWayRecyclerAdapter extends RecyclerView.Adapter<MapWayRecyclerAd
 
     private void sendPoints(final Context context, Vehicle vehicle, List<Waypoint> waypoints) {
         try {
-            vehicle.sendPoints(WaypointsConverter.convert(waypoints), new ActionWithMessage<String>() {
+            vehicle.sendPoints(WaypointConverter.convert(waypoints), new ActionWithMessage<String>() {
                 @Override
                 public void handle(String message) {
                     mHandler.post(new Runnable() {
